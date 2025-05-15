@@ -9,3 +9,21 @@ The URL `amqp://guest:guest@localhost:5672` in both the publisher and subscriber
 ### Running RabbitMQ
 
 ![alt text](image.png)
+
+### Cargo Run 
+
+#### Subscriber
+
+![alt text](image-1.png)
+
+#### Publisher
+
+![alt text](image-2.png)
+
+#### What's happening?
+
+When the publisher is executed using `cargo run`, it initializes and dispatches five `UserCreatedEventMessage` events to a RabbitMQ queue under the routing key `user_created`. Each event contains distinct `user_id` and `user_name` fields. After publishing the messages, the publisher terminates its process.
+
+On the other hand, when the subscriber is launched with `cargo run`, it begins listening to the same `user_created` queue. As messages arrive, the subscriber processes them sequentially, printing each message's details `user_id` and `user_name` to the console. The subscriber operates in an infinite loop, continuously awaiting new messages.
+
+The subscriber's output displays repeated instances of the same messages, indicating potential reprocessing. This behavior may stem from the queue's configuration, such as the absence of message acknowledgment or settings like `auto_delete: false` and `durable: false`, which prevent messages from being automatically removed after delivery.
