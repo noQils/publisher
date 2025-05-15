@@ -28,12 +28,25 @@ On the other hand, when the subscriber is launched with `cargo run`, it begins l
 
 The subscriber's output displays repeated instances of the same messages, indicating potential reprocessing. This behavior may stem from the queue's configuration, such as the absence of message acknowledgment or settings like `auto_delete: false` and `durable: false`, which prevent messages from being automatically removed after delivery.
 
-#### After running publisher for a few more times
+#### Monitoring RabbitMQ after running publisher for a few more times
 
 ![alt text](image-3.png)
 When the publisher is executed, it sends multiple `UserCreatedEventMessage` events to the RabbitMQ queue, which is reflected in the RabbitMQ management interface as noticeable spikes in the message rates chart. These spikes indicate a sudden increase in message throughput, confirming that the publisher successfully dispatches events to the queue. Additionally, metrics such as memory usage and Erlang processes under the **Global counts** section may temporarily rise due to the increased workload. Repeated executions of the publisher amplify these spikes, demonstrating RabbitMQ's real-time processing capabilities and its responsiveness to event-driven workloads. The visualization of these spikes in the **Chart statistics** section serves as direct evidence of the publisher's impact on the messaging system.  
 
-#### After adding `thread::sleep(ten_millis);` in subscriber main.rs
+#### Monitoring RabbitMQ after adding `thread::sleep(ten_millis);` in subscriber main.rs
 
 ![alt text](image-4.png)
 After modifying the subscriber to include a 1 second delay per message processing and running multiple publisher instances quickly, RabbitMQ's queue accumulates messages faster than the subscriber can process them. The "Total" count in the queue (20 in this case) represents the backlog of unprocessed messages waiting in the queue. This occurs because the publisher can rapidly send messages while the slow subscriber processes them sequentially with delays. The queue acts as a buffer, storing messages until the subscriber is ready to handle them, demonstrating RabbitMQ's ability to manage differing producer and consumer speeds. The exact number in your queue may vary depending on how many times you executed the publisher before checking the dashboard.
+
+#### Running subscriber on multiple consoles (5 consoles)
+
+![alt text](image-5.png)
+![alt text](image-6.png)
+![alt text](image-7.png)
+![alt text](image-8.png)
+![alt text](image-9.png)
+
+#### Monitoring RabbitMQ with multiple subscribers
+
+![alt text](image-10.png)
+When running 5 subscriber instances simultaneously, the message processing speed significantly improves compared to a single slow subscriber. The RabbitMQ dashboard shows faster reduction in queue spikes because messages are now being distributed across multiple consumers (round-robin by default). Each subscriber console processes different messages (e.g., I ran 5 different consoles, so each console handles one message. One for each "Budi", "Dira", "Amir", "Cica", and "Emir"), demonstrating RabbitMQ's built-in load balancing. The publisher code efficiently dispatches events, but could be improved by implementing batch publishing. The subscriber's 1 second artificial delay remains a bottleneck, suggesting either: (1) reducing the delay in production scenarios, or (2) implementing parallel processing within each subscriber. The global counts show active connections matching our 5 subscribers, proving the horizontal scaling works as intended in event-driven architectures.
