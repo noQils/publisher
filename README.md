@@ -27,3 +27,8 @@ When the publisher is executed using `cargo run`, it initializes and dispatches 
 On the other hand, when the subscriber is launched with `cargo run`, it begins listening to the same `user_created` queue. As messages arrive, the subscriber processes them sequentially, printing each message's details `user_id` and `user_name` to the console. The subscriber operates in an infinite loop, continuously awaiting new messages.
 
 The subscriber's output displays repeated instances of the same messages, indicating potential reprocessing. This behavior may stem from the queue's configuration, such as the absence of message acknowledgment or settings like `auto_delete: false` and `durable: false`, which prevent messages from being automatically removed after delivery.
+
+#### After running publisher for a few more times
+
+![alt text](image-3.png)
+When the publisher is executed, it sends multiple `UserCreatedEventMessage` events to the RabbitMQ queue, which is reflected in the RabbitMQ management interface as noticeable spikes in the message rates chart. These spikes indicate a sudden increase in message throughput, confirming that the publisher successfully dispatches events to the queue. Additionally, metrics such as memory usage and Erlang processes under the **Global counts** section may temporarily rise due to the increased workload. Repeated executions of the publisher amplify these spikes, demonstrating RabbitMQ's real-time processing capabilities and its responsiveness to event-driven workloads. The visualization of these spikes in the **Chart statistics** section serves as direct evidence of the publisher's impact on the messaging system.  
