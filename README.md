@@ -5,3 +5,7 @@ The amount of data your publisher program sends to the message broker in one run
 ### b. The URL of: `amqp://guest:guest@localhost:5672` is the same as in the subscriber program, what does it mean?
 
 The URL `amqp://guest:guest@localhost:5672` in both the publisher and subscriber programs means that **both are connecting to the same AMQP broker**, which is running on the local machine (`localhost`) on the default AMQP port (`5672`). The `guest:guest` part indicates they are both using the same default credentials to authenticate. This ensures that the publisher can send messages to the broker and the subscriber can receive them from the same message queue, enabling communication between the two programs through RabbitMQ or any compatible AMQP message broker.
+
+### Running RabbitMQ
+
+![alt text](image.png)
